@@ -1,0 +1,17 @@
+# TLS certificates
+certs/
+
+# Air build output
+tmp/
+
+# macOS
+.DS_Store
+
+# Environment files
+.env
+.env.*
+
+# Editor
+.idea/
+.vscode/
+*.swp

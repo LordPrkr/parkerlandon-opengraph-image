@@ -1,0 +1,20 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+pre_cmd = ["templ generate"]
+cmd = "go build -o ./tmp/main ./cmd/server"
+entrypoint = ["./tmp/main"]
+# Watch these file extensions
+include_ext = ["go", "templ", "toml"]
+# Directories to watch
+include_dir = ["cmd", "pkg", "configs", "web"]
+# Exclude directories
+exclude_dir = ["tmp", "vendor", "certs"]
+# Exclude files
+exclude_file = []
+# Exclude generated templ files to prevent rebuild loop
+exclude_regex = ["_templ\\.go$"]
+
+[misc]
+clean_on_exit = true

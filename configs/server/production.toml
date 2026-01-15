@@ -1,0 +1,14 @@
+[cors]
+allowed_origins="*"
+
+[tls]
+# TLS handled by Fly.io edge
+
+[tls.server]
+
+[log]
+level="INFO"
+
+[ogimage]
+browser_pool_size=2
+base_url="http://localhost:3000"

@@ -1,0 +1,15 @@
+[cors]
+allowed_origins="http://localhost:5173"
+
+[tls]
+
+[tls.server]
+# cert_file="certs/server.crt"
+# key_file="certs/server.key"
+
+[log]
+level="DEBUG"
+
+[ogimage]
+browser_pool_size=4
+base_url="http://localhost:3000"
