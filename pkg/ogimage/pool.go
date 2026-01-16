@@ -9,39 +9,48 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 )
 
-// BrowserPool manages browser instances. In constrained environments,
-// it creates browsers on-demand rather than pre-pooling them.
+// BrowserPool manages a single shared browser instance.
+// Pages are created per-request, which is fast (~100ms).
 type BrowserPool struct {
-	mu sync.Mutex
+	browser *rod.Browser
+	mu      sync.Mutex
 }
 
 func NewBrowserPool(size int) (*BrowserPool, error) {
-	// Size is ignored - we create browsers on-demand
-	return &BrowserPool{}, nil
+	browser, err := launchBrowser()
+	if err != nil {
+		return nil, err
+	}
+	slog.Info("browser launched successfully")
+	return &BrowserPool{browser: browser}, nil
 }
 
-// Get creates a fresh browser for each request
+// Get returns the shared browser instance
 func (p *BrowserPool) Get() *rod.Browser {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	browser, err := launchBrowser()
-	if err != nil {
-		slog.Error("failed to launch browser", "error", err)
-		return nil
+	// Check if browser is still alive, reconnect if needed
+	if p.browser == nil {
+		slog.Info("browser was nil, relaunching")
+		browser, err := launchBrowser()
+		if err != nil {
+			slog.Error("failed to relaunch browser", "error", err)
+			return nil
+		}
+		p.browser = browser
 	}
-	return browser
-}
 
-// Put closes the browser after use
-func (p *BrowserPool) Put(browser *rod.Browser) {
-	if browser != nil {
-		browser.MustClose()
-	}
+	return p.browser
 }
 
 func (p *BrowserPool) Close() {
-	// Nothing to close - browsers are closed after each request
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.browser != nil {
+		p.browser.MustClose()
+		p.browser = nil
+	}
 }
 
 func launchBrowser() (*rod.Browser, error) {
@@ -54,7 +63,6 @@ func launchBrowser() (*rod.Browser, error) {
 			Set("disable-gpu").
 			Set("disable-dev-shm-usage").
 			Set("disable-software-rasterizer").
-			Set("single-process").
 			Launch()
 		if err != nil {
 			return nil, err
