@@ -68,14 +68,18 @@ func launchBrowser(browserPath string) (*rod.Browser, error) {
 		u, err := launcher.New().
 			Bin(browserPath).
 			Headless(true).
-			NoSandbox(true).
+			Set("no-sandbox").
 			Set("disable-gpu").
 			Set("disable-dev-shm-usage").
-			Set("disable-software-rasterizer").
-			Set("single-process").
-			Set("renderer-process-limit", "1").
-			Set("no-sandbox").
-			Set("max-active-tabs", "1").
+			Set("disable-setuid-sandbox").
+			Set("disable-extensions").
+			Set("disable-background-networking").
+			Set("disable-sync").
+			Set("disable-translate").
+			Set("mute-audio").
+			Set("hide-scrollbars").
+			Set("metrics-recording-only").
+			Set("no-first-run").
 			Launch()
 		if err != nil {
 			return nil, err
