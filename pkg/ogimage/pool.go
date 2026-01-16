@@ -36,6 +36,9 @@ func launchBrowser() (*rod.Browser, error) {
 			Bin(browserPath).
 			Headless(true).
 			NoSandbox(true).
+			Set("disable-gpu").
+			Set("disable-dev-shm-usage").
+			Set("disable-software-rasterizer").
 			Launch()
 		if err != nil {
 			return nil, err
