@@ -3,7 +3,9 @@ package ogimage
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/url"
+	"time"
 
 	"github.com/ParkerGits/go-backend-starter/pkg/templates"
 	"github.com/go-rod/rod/lib/proto"
@@ -22,16 +24,19 @@ func NewGenerator(pool *BrowserPool, baseURL string) *Generator {
 }
 
 func (g *Generator) Generate(ctx context.Context, params templates.OGImageParams) ([]byte, error) {
+	slog.Info("getting browser from pool")
 	browser := g.pool.Get()
 	defer g.pool.Put(browser)
 
-	page, err := browser.Page(proto.TargetCreateTarget{URL: "about:blank"})
+	slog.Info("creating page")
+	page, err := browser.Timeout(30 * time.Second).Page(proto.TargetCreateTarget{URL: "about:blank"})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create page: %w", err)
 	}
 	defer page.MustClose()
 
-	err = page.SetViewport(&proto.EmulationSetDeviceMetricsOverride{
+	slog.Info("setting viewport")
+	err = page.Timeout(10 * time.Second).SetViewport(&proto.EmulationSetDeviceMetricsOverride{
 		Width:  1200,
 		Height: 630,
 	})
@@ -44,17 +49,20 @@ func (g *Generator) Generate(ctx context.Context, params templates.OGImageParams
 		url.QueryEscape(params.Title),
 		url.QueryEscape(params.Subtitle))
 
-	err = page.Navigate(previewURL)
+	slog.Info("navigating to preview", "url", previewURL)
+	err = page.Timeout(30 * time.Second).Navigate(previewURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to navigate: %w", err)
 	}
 
-	err = page.WaitLoad()
+	slog.Info("waiting for page load")
+	err = page.Timeout(30 * time.Second).WaitLoad()
 	if err != nil {
 		return nil, fmt.Errorf("failed to wait for load: %w", err)
 	}
 
-	screenshot, err := page.Screenshot(true, &proto.PageCaptureScreenshot{
+	slog.Info("taking screenshot")
+	screenshot, err := page.Timeout(30 * time.Second).Screenshot(true, &proto.PageCaptureScreenshot{
 		Format: proto.PageCaptureScreenshotFormatPng,
 		Clip: &proto.PageViewport{
 			X:      0,
@@ -68,5 +76,6 @@ func (g *Generator) Generate(ctx context.Context, params templates.OGImageParams
 		return nil, fmt.Errorf("failed to capture screenshot: %w", err)
 	}
 
+	slog.Info("screenshot complete")
 	return screenshot, nil
 }
