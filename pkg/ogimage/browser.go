@@ -25,17 +25,26 @@ func NewBrowserManager(browserPath string) (*BrowserManager, error) {
 	return &BrowserManager{browser: browser, browserPath: browserPath}, nil
 }
 
-// Get returns the shared browser instance
+// Get returns the shared browser instance, relaunching if needed
 func (m *BrowserManager) Get() *rod.Browser {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	// Check if browser is still alive, reconnect if needed
+	// Check if browser is still alive by attempting a simple operation
+	if m.browser != nil {
+		_, err := m.browser.Version()
+		if err != nil {
+			slog.Warn("browser connection lost, relaunching", "error", err)
+			m.browser = nil
+		}
+	}
+
+	// Relaunch if needed
 	if m.browser == nil {
-		slog.Info("browser was nil, relaunching")
+		slog.Info("launching browser")
 		browser, err := launchBrowser(m.browserPath)
 		if err != nil {
-			slog.Error("failed to relaunch browser", "error", err)
+			slog.Error("failed to launch browser", "error", err)
 			return nil
 		}
 		m.browser = browser
