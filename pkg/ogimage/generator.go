@@ -24,8 +24,11 @@ func NewGenerator(pool *BrowserPool, baseURL string) *Generator {
 }
 
 func (g *Generator) Generate(ctx context.Context, params templates.OGImageParams) ([]byte, error) {
-	slog.Info("getting browser from pool")
+	slog.Info("launching browser")
 	browser := g.pool.Get()
+	if browser == nil {
+		return nil, fmt.Errorf("failed to launch browser")
+	}
 	defer g.pool.Put(browser)
 
 	slog.Info("creating page")

@@ -1,37 +1,52 @@
 package ogimage
 
 import (
+	"log/slog"
 	"os"
+	"sync"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 )
 
+// BrowserPool manages browser instances. In constrained environments,
+// it creates browsers on-demand rather than pre-pooling them.
 type BrowserPool struct {
-	browsers chan *rod.Browser
-	size     int
+	mu sync.Mutex
 }
 
 func NewBrowserPool(size int) (*BrowserPool, error) {
-	pool := &BrowserPool{
-		browsers: make(chan *rod.Browser, size),
-		size:     size,
-	}
+	// Size is ignored - we create browsers on-demand
+	return &BrowserPool{}, nil
+}
 
-	for range size {
-		browser, err := launchBrowser()
-		if err != nil {
-			return nil, err
-		}
-		pool.browsers <- browser
-	}
+// Get creates a fresh browser for each request
+func (p *BrowserPool) Get() *rod.Browser {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return pool, nil
+	browser, err := launchBrowser()
+	if err != nil {
+		slog.Error("failed to launch browser", "error", err)
+		return nil
+	}
+	return browser
+}
+
+// Put closes the browser after use
+func (p *BrowserPool) Put(browser *rod.Browser) {
+	if browser != nil {
+		browser.MustClose()
+	}
+}
+
+func (p *BrowserPool) Close() {
+	// Nothing to close - browsers are closed after each request
 }
 
 func launchBrowser() (*rod.Browser, error) {
-	// Check for ROD_BROWSER env var for system-installed browser
 	if browserPath := os.Getenv("ROD_BROWSER"); browserPath != "" {
+		slog.Info("launching browser", "path", browserPath)
 		u, err := launcher.New().
 			Bin(browserPath).
 			Headless(true).
@@ -39,6 +54,7 @@ func launchBrowser() (*rod.Browser, error) {
 			Set("disable-gpu").
 			Set("disable-dev-shm-usage").
 			Set("disable-software-rasterizer").
+			Set("single-process").
 			Launch()
 		if err != nil {
 			return nil, err
@@ -46,21 +62,5 @@ func launchBrowser() (*rod.Browser, error) {
 		return rod.New().ControlURL(u).MustConnect(), nil
 	}
 
-	// Fall back to auto-download behavior
 	return rod.New().MustConnect(), nil
-}
-
-func (p *BrowserPool) Get() *rod.Browser {
-	return <-p.browsers
-}
-
-func (p *BrowserPool) Put(browser *rod.Browser) {
-	p.browsers <- browser
-}
-
-func (p *BrowserPool) Close() {
-	close(p.browsers)
-	for browser := range p.browsers {
-		browser.MustClose()
-	}
 }
