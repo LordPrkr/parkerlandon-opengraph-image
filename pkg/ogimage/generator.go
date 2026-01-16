@@ -12,19 +12,19 @@ import (
 )
 
 type Generator struct {
-	pool    *BrowserPool
+	browser *BrowserManager
 	baseURL string
 }
 
-func NewGenerator(pool *BrowserPool, baseURL string) *Generator {
+func NewGenerator(browser *BrowserManager, baseURL string) *Generator {
 	return &Generator{
-		pool:    pool,
+		browser: browser,
 		baseURL: baseURL,
 	}
 }
 
 func (g *Generator) Generate(ctx context.Context, params templates.OGImageParams) ([]byte, error) {
-	browser := g.pool.Get()
+	browser := g.browser.Get()
 	if browser == nil {
 		return nil, fmt.Errorf("failed to get browser")
 	}

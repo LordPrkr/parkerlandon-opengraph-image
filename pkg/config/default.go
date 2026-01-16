@@ -9,8 +9,8 @@ type Server struct {
 	ServerCertFile     string
 	ServerKeyFile      string
 	LogLevel           slog.Leveler
-	BrowserPoolSize    int
 	BaseURL            string
+	BrowserPath        string
 }
 
 func ParseServerConfig(getEnv func(string) string) *Server {

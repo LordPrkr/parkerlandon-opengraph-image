@@ -40,8 +40,8 @@ type LogConfig struct {
 }
 
 type OGImageConfig struct {
-	BrowserPoolSize int    `mapstructure:"browser_pool_size"`
-	BaseURL         string `mapstructure:"base_url"`
+	BaseURL     string `mapstructure:"base_url"`
+	BrowserPath string `mapstructure:"browser_path"`
 }
 
 func parseServerConfig(profile string) *Server {
@@ -72,8 +72,8 @@ func mapConfig(config serverConfig) *Server {
 		ServerCertFile:     config.Tls.Server.CertFile,
 		ServerKeyFile:      config.Tls.Server.KeyFile,
 		LogLevel:           parseLogLevel(config.Log.Level),
-		BrowserPoolSize:    config.OGImage.BrowserPoolSize,
 		BaseURL:            config.OGImage.BaseURL,
+		BrowserPath:        config.OGImage.BrowserPath,
 	}
 }
 

@@ -19,15 +19,15 @@ func Run(ctx context.Context, w io.Writer, getEnv func(string) string) error {
 	}))
 	slog.SetDefault(logger)
 
-	// Initialize browser pool
-	browserPool, err := ogimage.NewBrowserPool(config.BrowserPoolSize)
+	// Initialize browser manager
+	browserManager, err := ogimage.NewBrowserManager(config.BrowserPath)
 	if err != nil {
-		return fmt.Errorf("failed to create browser pool: %w", err)
+		return fmt.Errorf("failed to create browser manager: %w", err)
 	}
-	defer browserPool.Close()
+	defer browserManager.Close()
 
 	// Create generator
-	generator := ogimage.NewGenerator(browserPool, config.BaseURL)
+	generator := ogimage.NewGenerator(browserManager, config.BaseURL)
 
 	tlsConfig, err := httplib.TLSConfigFromCerts(ctx, config.ServerCertFile, config.ServerKeyFile)
 	if err != nil {

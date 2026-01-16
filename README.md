@@ -6,10 +6,12 @@ A Go HTTP server that dynamically generates OpenGraph images for blog posts and 
 
 - Dynamic OG image generation from query parameters
 - 1200x630 pixel output (standard OpenGraph dimensions)
-- Browser pool for handling concurrent requests
+- Single shared browser instance for fast page creation
 - Embedded static assets for single-binary deployment
-- TLS support
+- CDN-friendly caching headers
 - Configurable via TOML
+- Hot-reloading development with Air
+- Fly.io deployment ready
 
 ## Quick Start
 
@@ -17,10 +19,10 @@ A Go HTTP server that dynamically generates OpenGraph images for blog posts and 
 # Install dependencies
 just deps
 
-# Generate TLS certificates (optional, requires mkcert)
-just gen-certs "localhost 127.0.0.1"
+# Run the server (development)
+just dev
 
-# Run the server
+# Or run directly
 just run
 ```
 
@@ -29,10 +31,6 @@ just run
 ### Generate an OG Image
 
 ```bash
-# With TLS
-curl -k "https://localhost:3000/?title=My%20Blog%20Post&subtitle=A%20great%20article" -o og-image.png
-
-# Without TLS (update config to disable)
 curl "http://localhost:3000/?title=My%20Blog%20Post&subtitle=A%20great%20article" -o og-image.png
 ```
 
@@ -75,7 +73,7 @@ GET /?title=Hello&subtitle=World
          │
          ▼
     ┌─────────────┐
-    │  Generator  │  Get browser from pool
+    │  Generator  │  Get shared browser, create page
     └─────────────┘
          │
          ▼
@@ -107,7 +105,7 @@ GET /?title=Hello&subtitle=World
 │   ├── ogimage/         # OG image generation logic
 │   │   ├── handler.go   # HTTP handler for GET /
 │   │   ├── generator.go # Rod screenshot logic
-│   │   └── pool.go      # Browser pool management
+│   │   └── browser.go   # Shared browser management
 │   ├── server/          # HTTP server setup and routing
 │   └── templates/       # Templ HTML templates
 ├── web/static/          # Embedded static assets (avatar)
@@ -116,23 +114,26 @@ GET /?title=Hello&subtitle=World
 
 ### Key Components
 
-**Browser Pool (`pkg/ogimage/pool.go`)**
+**Browser Manager (`pkg/ogimage/browser.go`)**
 
-- Manages a pool of headless Chrome browser instances
-- Channel-based semaphore pattern for concurrency control
-- Configurable pool size via `browser_pool_size` config
+- Manages a single shared headless Chrome browser instance
+- Browser launched once at startup (~2-3s)
+- Pages created per-request (~100-200ms)
+- Auto-reconnects if browser crashes
 
 **Generator (`pkg/ogimage/generator.go`)**
 
-- Acquires browser from pool
+- Creates a new page per request on the shared browser
 - Navigates to internal `/_preview` route
 - Captures viewport screenshot at 1200x630
+- 30-second timeouts on all operations
 
 **Template (`pkg/templates/ogimage.templ`)**
 
 - Defines the OG image layout using Templ
 - Pink/magenta borders at top and bottom
 - Avatar on left (33% width), text content on right
+- Uses system-installed Noto Serif font
 - Compiled to Go code via `templ generate`
 
 ## Configuration
@@ -153,8 +154,8 @@ key_file="certs/server.key"
 level="DEBUG"  # DEBUG, INFO, WARN, ERROR
 
 [ogimage]
-browser_pool_size=4                    # number of browser instances
 base_url="http://localhost:3000"       # internal URL for screenshots
+browser_path="/usr/bin/chromium"       # path to Chrome/Chromium binary (omit to auto-detect)
 ```
 
 ### Disabling TLS
@@ -171,20 +172,23 @@ To run without TLS, remove or comment out the TLS section:
 
 ### Prerequisites
 
-- Go 1.23+
+- Go 1.22+
 - [just](https://github.com/casey/just) (task runner)
 - [mkcert](https://github.com/FiloSottile/mkcert) (optional, for TLS)
 
 ### Commands
 
 ```bash
-# Install Go dependencies and templ CLI
+# Install Go dependencies, templ CLI, and air
 just deps
+
+# Run with hot-reloading (recommended for development)
+just dev
 
 # Generate Templ templates (creates *_templ.go files)
 just generate
 
-# Run the server (includes template generation)
+# Run the server directly
 just run
 
 # Generate TLS certificates
@@ -194,8 +198,8 @@ just gen-certs "localhost 127.0.0.1"
 ### Customizing the Template
 
 1. Edit `pkg/templates/ogimage.templ`
-2. Run `just generate` to regenerate Go code
-3. Restart the server
+2. Air will auto-rebuild, or run `just generate` manually
+3. Server restarts automatically
 
 ### Replacing the Avatar
 
@@ -205,6 +209,35 @@ Replace `web/static/avatar.png` with your own image and rebuild:
 cp /path/to/your/image.png web/static/avatar.png
 just run
 ```
+
+## Container Deployment
+
+### Build and Run Locally
+
+```bash
+# Build container image
+just build-image
+
+# Run container
+just run-image
+```
+
+### Deploy to Fly.io
+
+```bash
+# Install flyctl
+curl -L https://fly.io/install.sh | sh
+
+# Login and deploy
+fly auth login
+fly launch --no-deploy  # first time only
+fly deploy
+```
+
+The app includes CDN-friendly caching headers:
+- Browser cache: 24 hours (`max-age=86400`)
+- CDN cache: 7 days (`s-maxage=604800`)
+- Stale-while-revalidate: 1 hour
 
 ## Output Example
 

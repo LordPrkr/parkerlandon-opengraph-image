@@ -25,9 +25,6 @@ RUN apk add --no-cache \
     font-noto \
     font-noto-emoji
 
-# Set Chrome path for rod
-ENV ROD_BROWSER=/usr/bin/chromium
-
 WORKDIR /app
 
 # Copy binary from builder

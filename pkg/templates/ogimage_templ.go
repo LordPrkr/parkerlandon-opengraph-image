@@ -36,14 +36,14 @@ func OGImage(params OGImageParams) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html><head><meta charset=\"UTF-8\"><style>\n\t\t\t@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');\n\t\t\t\t* {\n\t\t\t\t\tmargin: 0;\n\t\t\t\t\tpadding: 0;\n\t\t\t\t\tbox-sizing: border-box;\n\n\t\t\t\t\t--color-accent: rgb(182, 38, 165);\n\t\t\t\t\t--color-text-header: rgb(9, 9, 11);\n\t\t\t\t\t--color-text-body: rgb(113, 113, 122);\n\t\t\t\t}\n\t\t\t\tbody {\n\t\t\t\t\twidth: 1200px;\n\t\t\t\t\theight: 630px;\n\t\t\t\t\tbackground: white;\n\t\t\t\t\tfont-family: \"Noto-Serif\", serif;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tflex-direction: column;\n\t\t\t\t}\n\t\t\t\t.border-bar {\n\t\t\t\t\theight: 36px;\n\t\t\t\t\tbackground: var(--color-accent);\n\t\t\t\t}\n\t\t\t\t.content {\n\t\t\t\t\tflex: 1;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tpadding: 40px 60px;\n\t\t\t\t}\n\t\t\t\t.avatar-container {\n\t\t\t\t\twidth: 33%;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tjustify-content: center;\n\t\t\t\t\talign-items: center;\n\t\t\t\t}\n\t\t\t\t.avatar {\n\t\t\t\t\tmax-width: 400px;\n\t\t\t\t\tobject-fit: contain;\n\t\t\t\t}\n\t\t\t\t.text-container {\n\t\t\t\t\tflex: 1;\n\t\t\t\t\tpadding-left: 40px;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tflex-direction: column;\n\t\t\t\t\tjustify-content: center;\n\t\t\t\t}\n\t\t\t\t.title {\n\t\t\t\t\tfont-family: \"Noto-Serif\", serif;\n\t\t\t\t\tfont-size: 56px;\n\t\t\t\t\tfont-weight: 400;\n\t\t\t\t\tcolor: var(--color-text-header);\n\t\t\t\t\tline-height: 1.2;\n\t\t\t\t\tmargin-bottom: 20px;\n\t\t\t\t}\n\t\t\t\t.subtitle {\n\t\t\t\t\tfont-family: \"Noto-Serif\", serif;\n\t\t\t\t\tfont-size: 32px;\n\t\t\t\t\tfont-weight: 300;\n\t\t\t\t\tcolor: var(--color-text-body);\n\t\t\t\t\tline-height: 1.3;\n\t\t\t\t\tmargin-bottom: 24px;\n\t\t\t\t}\n\t\t\t\t.handle {\n\t\t\t\t\tfont-size: 28px;\n\t\t\t\t\tcolor: #9ca3af;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"border-bar\"></div><div class=\"content\"><div class=\"avatar-container\"><img class=\"avatar\" src=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html><head><meta charset=\"UTF-8\"><style>\n\t\t\t\t* {\n\t\t\t\t\tmargin: 0;\n\t\t\t\t\tpadding: 0;\n\t\t\t\t\tbox-sizing: border-box;\n\n\t\t\t\t\t--color-accent: rgb(182, 38, 165);\n\t\t\t\t\t--color-text-header: rgb(9, 9, 11);\n\t\t\t\t\t--color-text-body: rgb(113, 113, 122);\n\t\t\t\t}\n\t\t\t\tbody {\n\t\t\t\t\twidth: 1200px;\n\t\t\t\t\theight: 630px;\n\t\t\t\t\tbackground: white;\n\t\t\t\t\tfont-family: \"Noto Serif\", serif;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tflex-direction: column;\n\t\t\t\t}\n\t\t\t\t.border-bar {\n\t\t\t\t\theight: 36px;\n\t\t\t\t\tbackground: var(--color-accent);\n\t\t\t\t}\n\t\t\t\t.content {\n\t\t\t\t\tflex: 1;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tpadding: 40px 60px;\n\t\t\t\t}\n\t\t\t\t.avatar-container {\n\t\t\t\t\twidth: 33%;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tjustify-content: center;\n\t\t\t\t\talign-items: center;\n\t\t\t\t}\n\t\t\t\t.avatar {\n\t\t\t\t\tmax-width: 400px;\n\t\t\t\t\tobject-fit: contain;\n\t\t\t\t}\n\t\t\t\t.text-container {\n\t\t\t\t\tflex: 1;\n\t\t\t\t\tpadding-left: 40px;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\tflex-direction: column;\n\t\t\t\t\tjustify-content: center;\n\t\t\t\t}\n\t\t\t\t.title {\n\t\t\t\t\tfont-family: \"Noto Serif\", serif;\n\t\t\t\t\tfont-size: 56px;\n\t\t\t\t\tfont-weight: 400;\n\t\t\t\t\tcolor: var(--color-text-header);\n\t\t\t\t\tline-height: 1.2;\n\t\t\t\t\tmargin-bottom: 20px;\n\t\t\t\t}\n\t\t\t\t.subtitle {\n\t\t\t\t\tfont-family: \"Noto Serif\", serif;\n\t\t\t\t\tfont-size: 32px;\n\t\t\t\t\tfont-weight: 300;\n\t\t\t\t\tcolor: var(--color-text-body);\n\t\t\t\t\tline-height: 1.3;\n\t\t\t\t\tmargin-bottom: 24px;\n\t\t\t\t}\n\t\t\t\t.handle {\n\t\t\t\t\tfont-size: 28px;\n\t\t\t\t\tcolor: #9ca3af;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"border-bar\"></div><div class=\"content\"><div class=\"avatar-container\"><img class=\"avatar\" src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(params.AvatarURL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 87, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 86, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -56,7 +56,7 @@ func OGImage(params OGImageParams) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(params.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 90, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 89, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -74,7 +74,7 @@ func OGImage(params OGImageParams) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(params.Subtitle)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 92, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 91, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -92,7 +92,7 @@ func OGImage(params OGImageParams) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(params.Handle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 94, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/templates/ogimage.templ`, Line: 93, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
